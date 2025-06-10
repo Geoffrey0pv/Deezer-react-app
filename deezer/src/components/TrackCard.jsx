@@ -10,12 +10,6 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-/**
- * Componente presentacional para una pista (track).
- * @param {Object} props
- * @param {Object} props.track - Track con estructura del backend
- * @param {Function} props.onDelete — Callback que recibe el trackId a eliminar.
- */
 export default function TrackCard({ track, onDelete }) {
   // Adaptamos la estructura de datos del backend
   const {
@@ -27,7 +21,6 @@ export default function TrackCard({ track, onDelete }) {
     artistPicture
   } = track;
 
-  // Fallback para la imagen
   const coverImage = albumCover || artistPicture || '/placeholder-image.jpg';
 
   return (

@@ -6,10 +6,8 @@ import useFetch from '../hooks/useFetch';
 import { getPlaylists } from '../api/deezerApi';
 
 export default function PlaylistsPage() {
-  // 1. Llamamos al hook con nuestro fetcher
   const { data: playlists, loading, error, reload } = useFetch(getPlaylists, []);
 
-  // 2. Casos de estado
   if (loading) {
     return <CircularProgress sx={{ margin: 4 }} />;
   }
@@ -21,16 +19,15 @@ export default function PlaylistsPage() {
     );
   }
 
-  // 3. Renderizamos cuando ya tenemos datos
   return (
-    <Grid container spacing={2} padding={2}>
+    <Grid container spacing={2} padding={2} justifyContent="center" >
       {playlists?.map(pl => (
-        <Grid key={pl.id} xs={12} sm={6} md={4}>
+        <Grid key={pl.id} item xs={12} sm={6} md={4}>
           <Link to={`/playlists/${pl.id}`} style={{ textDecoration: 'none' }}>
             <PlaylistCard
-              name={pl.name}        // Campo del backend
-              mood={pl.mood}        // Campo del backend
-              cover={pl.cover}      // Si tienes este campo
+              name={pl.name}        
+              mood={pl.mood}        
+              cover={pl.cover}  
               onClick={() => {}}
             />
           </Link>

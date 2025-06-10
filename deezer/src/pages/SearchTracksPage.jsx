@@ -16,22 +16,19 @@ import { searchTracks, addTrack } from '../api/deezerApi';
 export default function SearchTracksPage() {
   const { id: playlistId } = useParams();
 
-  // Estados de búsqueda
   const [term, setTerm] = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  // Para feedback al usuario
   const [snackbar, setSnackbar] = useState({ open: false, message: '' });
 
-  // Ejecuta la búsqueda
   const handleSearch = async () => {
     if (!term.trim()) return;
     setLoading(true);
     setError(null);
     try {
       const data = await searchTracks(term);
-      setResults(Array.isArray(data) ? data : []);
+      setResults(Array.isArray(data.data) ? data.data : []);
     } catch (err) {
       console.error(err);
       setError('Error al buscar pistas');
@@ -40,7 +37,6 @@ export default function SearchTracksPage() {
     }
   };
 
-  // Agrega una pista a la playlist
   const handleAdd = async (track) => {
     try {
       await addTrack(playlistId, track);
@@ -55,7 +51,6 @@ export default function SearchTracksPage() {
     <Stack spacing={2} padding={2}>
       <Typography variant="h5">Buscar pistas para tu playlist</Typography>
 
-      {/* Formulario de búsqueda */}
       <Stack direction="row" spacing={1}>
         <TextField
           fullWidth
@@ -69,7 +64,6 @@ export default function SearchTracksPage() {
         </Button>
       </Stack>
 
-      {/* Estados de búsqueda */}
       {loading && <CircularProgress sx={{ alignSelf: 'center', mt: 2 }} />}
       {error && (
         <Alert severity="error" onClick={handleSearch}>
@@ -77,11 +71,10 @@ export default function SearchTracksPage() {
         </Alert>
       )}
 
-      {/* Resultados */}
       {!loading && !error && results.length > 0 && (
-        <Grid container spacing={2}>
+        <Grid container spacing={2} justifyContent="center" >
           {results.map(track => (
-            <Grid key={track.id} xs={12} sm={6} md={4}>
+            <Grid key={track.id} item xs={12} sm={6} md={4}>
               <SearchResultCard
                 track={track}
                 onAdd={handleAdd}
@@ -97,7 +90,6 @@ export default function SearchTracksPage() {
         </Typography>
       )}
 
-      {/* Snackbar de feedback */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={3000}

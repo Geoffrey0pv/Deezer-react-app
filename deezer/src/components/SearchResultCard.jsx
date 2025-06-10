@@ -10,16 +10,9 @@ import {
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 
-/**
- * Muestra una pista para agregarla a la playlist.
- * @param {Object} track - Track de la búsqueda de Deezer
- * @param {Function} onAdd(track) — Callback al pulsar "Agregar".
- */
 export default function SearchResultCard({ track, onAdd }) {
-  // Estructura de datos de Deezer
   const { title, artist, album, cover } = track;
   
-  // Fallbacks para datos que pueden no existir
   const artistName = artist?.name || 'Artista desconocido';
   const albumTitle = album?.title || '';
   const coverImage = album?.cover || cover || 'https://via.placeholder.com/80x80/424242/ffffff?text=♪';

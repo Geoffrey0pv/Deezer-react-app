@@ -1,4 +1,6 @@
-import React from 'react';
+// src/pages/PlaylistTracksPage.jsx
+
+import React, { useCallback } from 'react'; // 1. Importa useCallback
 import { useParams, Link } from 'react-router-dom';
 import { Grid, CircularProgress, Alert, Button, Stack, Typography } from '@mui/material';
 import TrackCard from '../components/TrackCard';
@@ -6,18 +8,17 @@ import useFetch from '../hooks/useFetch';
 import { getTracks, removeTrack } from '../api/deezerApi';
 
 export default function PlaylistTracksPage() {
-  // 1. Extraemos el ID de la playlist de la URL
   const { id: playlistId } = useParams();
+  
+  const memoizedGetTracks = useCallback(() => getTracks(playlistId), [playlistId]);
 
-  // 2. Usamos useFetch para cargar las pistas
   const {
     data: tracks,
     loading,
     error,
     reload
-  } = useFetch(() => getTracks(playlistId), [playlistId]);
+  } = useFetch(memoizedGetTracks, [playlistId]); // 3. Pasa la función memorizada al hook
 
-  // 3. Manejamos estados de carga y error
   if (loading) {
     return <CircularProgress sx={{ m: 4 }} />;
   }
@@ -29,14 +30,13 @@ export default function PlaylistTracksPage() {
     );
   }
 
-  // 4. Renderizamos la UI con un botón para ir a buscar más pistas
   return (
-    <Stack spacing={2} padding={2}>
-      {/* Enlace para buscar nuevas pistas */}
+    <Stack spacing={2} padding={2} justifyContent="center">
       <Button
         component={Link}
         to={`/playlists/${playlistId}/search`}
         variant="contained"
+        
       >
         Buscar y agregar pistas
       </Button>
@@ -45,18 +45,15 @@ export default function PlaylistTracksPage() {
         Pistas en la playlist
       </Typography>
 
-      {/* Lista de pistas */}
-      <Grid container spacing={2}>
+      <Grid container spacing={2} justifyContent="center">
         {tracks?.map(track => (
-          <Grid key={track.id} xs={12} sm={6} md={4}>
+          <Grid key={track.id} item xs={12} sm={6} md={4}>
             <TrackCard
               track={track}
               onDelete={async (trackId) => {
                 try {
-                  // Llamamos al API para eliminar
                   await removeTrack(playlistId, trackId);
-                  // Recargamos la lista
-                  reload();
+                  reload(); // Llama a reload para refrescar la lista de pistas
                 } catch (error) {
                   console.error('Error eliminando track:', error);
                 }
